@@ -42,7 +42,7 @@ test('GitHub Codespaces provider rejects malformed repository names', () => {
   assert.throws(() => createGithubCodespacesHandoff('https://evil.example'), { code: 'INVALID_REPOSITORY' })
 })
 
-import { assertWorkspaceRole } from '../lib/auth/workspace-access.js'
+import { assertWorkspaceRole, isUuid } from '../lib/auth/workspace-access.js'
 
 test('workspace membership roles enforce least privilege', () => {
   const viewer = { member_role: 'viewer' }
@@ -52,4 +52,10 @@ test('workspace membership roles enforce least privilege', () => {
   assert.throws(() => assertWorkspaceRole(viewer, { uid: 'u1' }, 'editor'), { code: 'WORKSPACE_NOT_FOUND' })
   assert.doesNotThrow(() => assertWorkspaceRole(editor, { uid: 'u1' }, 'editor'))
   assert.doesNotThrow(() => assertWorkspaceRole(owner, { uid: 'u1' }, 'owner'))
+})
+
+test('workspace resource identifiers must be UUIDs', () => {
+  assert.equal(isUuid('d9428888-122b-4c4f-9f7e-9a2f5a3f8c10'), true)
+  assert.equal(isUuid('not-a-uuid'), false)
+  assert.equal(isUuid(['not-a-uuid']), false)
 })
