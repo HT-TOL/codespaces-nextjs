@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import { FirebaseAuthError, getBearerToken, verifyFirebaseIdToken } from '../../../../../lib/auth/firebase'
 import { getDatabase } from '../../../../../lib/db/postgres'
-import { assertWorkspaceRole } from '../../../../../lib/auth/workspace-access'
+import { assertWorkspaceRole, isUuid } from '../../../../../lib/auth/workspace-access'
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
@@ -10,6 +10,8 @@ export default async function handler(req, res) {
     res.setHeader('Allow', 'GET, POST')
     return res.status(405).json({ error: 'method_not_allowed' })
   }
+
+  if (!isUuid(req.query.id)) return res.status(400).json({ error: 'INVALID_WORKSPACE_ID' })
 
   const token = getBearerToken(req)
   if (!token) return res.status(401).json({ error: 'AUTH_REQUIRED' })
