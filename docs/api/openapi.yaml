@@ -1,0 +1,63 @@
+openapi: 3.1.0
+info:
+  title: OCODEJS Codespaces Control API
+  version: 0.1.0
+  description: >
+    Draft contract for the OCodeJS hybrid workspace control plane.
+    Workspace mutation endpoints are intentionally not implemented or enabled
+    by the current frontend foundation.
+servers:
+  - url: /api
+paths:
+  /platform:
+    get:
+      summary: Read platform capability and integration status
+      operationId: getPlatformStatus
+      responses:
+        '200':
+          description: Safe status; contains no credentials or secret values
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [service, phase, providers]
+                properties:
+                  service: { type: string, const: ocodejs-codespaces }
+                  phase: { type: string, const: frontend-foundation }
+                  providers:
+                    type: object
+                    properties:
+                      githubCodespaces:
+                        type: object
+                        properties:
+                          mode: { type: string, const: handoff }
+                          configured: { type: boolean }
+                          workspaceProvisioning: { type: boolean, const: false }
+                      ocodejsRuntime:
+                        type: object
+                        properties:
+                          mode: { type: string, const: disabled }
+                          configured: { type: boolean, const: false }
+                          workspaceProvisioning: { type: boolean, const: false }
+  /v1/workspaces:
+    get:
+      summary: List caller-owned workspaces (future)
+      security: [{ sessionAuth: [] }]
+      responses:
+        '501': { description: Not implemented in the frontend foundation }
+    post:
+      summary: Request workspace creation (future)
+      security: [{ sessionAuth: [] }]
+      parameters:
+        - in: header
+          name: Idempotency-Key
+          required: true
+          schema: { type: string, minLength: 16, maxLength: 128 }
+      responses:
+        '501': { description: Not implemented in the frontend foundation }
+components:
+  securitySchemes:
+    sessionAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: Opaque session token

@@ -1,13 +1,39 @@
-# GitHub Codespaces ♥️ Next.js
+# OCODEJS Codespaces
 
-Welcome to your shiny new Codespace running Next.js! We've got everything fired up and running for you to explore Next.js.
+OCodeJS-branded cloud development workspace with a Hybrid provider strategy.
 
-You've got a blank canvas to work on from a git perspective as well. There's a single initial commit with the what you're seeing right now - where you go from here is up to you!
+## Current phase
 
-Everything you do here is contained within this one codespace. There is no repository on GitHub yet. If and when you’re ready you can click "Publish Branch" and we’ll create your repository and push up your project. If you were just exploring then and have no further need for this code then you can simply delete your codespace and it's gone forever.
+The branded Next.js dashboard is available. The dashboard hands users off to
+GitHub Codespaces, but it does **not** yet create or manage Codespaces through
+the API. The independent OCodeJS container runtime is disabled and not
+provisioned.
 
-To run this application:
+## Run locally
 
-```
+```bash
+npm install
 npm run dev
 ```
+
+Open http://localhost:3000.
+
+## Platform status
+
+`GET /api/platform` reports implemented capabilities. It does not expose
+credentials and does not claim provider connectivity or workspace readiness.
+
+## Architecture
+
+See [Hybrid Architecture](docs/architecture/hybrid.md) and the draft
+[Control API contract](docs/api/openapi.yaml).
+
+## Security and rollout
+
+Do not enable workspace execution until identity, ownership checks, durable
+queue semantics, resource quotas, default-deny networking, secret handling,
+tenant isolation, cancellation, recovery, and container escape tests are
+implemented and verified.
+
+No production deployment, DNS change, paid compute, or credential setup is
+part of this PR.
