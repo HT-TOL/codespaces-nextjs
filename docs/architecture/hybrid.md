@@ -75,6 +75,9 @@ Workspace:
 - lifecycle_state, requested_template, region, resource_profile
 - created_at, updated_at, expires_at, last_activity_at
 
+WorkspaceMember:
+- workspace_id, user_id, role (owner, editor, viewer), created_at
+
 WorkspaceJob:
 - id, workspace_id, operation, idempotency_key
 - state, attempt, lease_owner, lease_expires_at
