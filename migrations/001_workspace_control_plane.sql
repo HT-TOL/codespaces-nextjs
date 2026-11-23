@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS workspace_jobs (
   available_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   lease_owner TEXT,
   lease_expires_at TIMESTAMPTZ,
+  cancel_requested_at TIMESTAMPTZ,
   idempotency_key TEXT NOT NULL,
   last_error_code TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
