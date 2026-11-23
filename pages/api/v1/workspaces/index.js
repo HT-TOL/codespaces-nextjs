@@ -45,7 +45,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const result = await db.query(
-        'SELECT id, repository, git_ref, template, provider, lifecycle_state, created_at, updated_at FROM workspaces WHERE owner_id = $1 AND lifecycle_state <> $2 ORDER BY created_at DESC LIMIT 100',
+        'SELECT w.id, w.repository, w.git_ref, w.template, w.provider, w.lifecycle_state, w.created_at, w.updated_at, m.role AS member_role FROM workspaces w JOIN workspace_members m ON m.workspace_id = w.id WHERE m.user_id = $1 AND w.lifecycle_state <> $2 ORDER BY w.created_at DESC LIMIT 100',
         [principal.uid, 'deleted'],
       )
       return res.status(200).json({ workspaces: result.rows })
@@ -104,6 +104,12 @@ export default async function handler(req, res) {
       )
     }
 
+    await client.query(
+      `INSERT INTO workspace_members (workspace_id, user_id, role)
+       VALUES ($1, $2, 'owner')
+       ON CONFLICT (workspace_id, user_id) DO NOTHING`,
+      [workspace.id, principal.uid],
+    )
     await client.query('COMMIT')
     return res.status(created ? 202 : 200).json({
       workspace,
