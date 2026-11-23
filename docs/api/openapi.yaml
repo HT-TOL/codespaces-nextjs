@@ -1,63 +1,100 @@
 openapi: 3.1.0
 info:
   title: OCODEJS Codespaces Control API
-  version: 0.1.0
+  version: 0.2.0
   description: >
-    Draft contract for the OCodeJS hybrid workspace control plane.
-    Workspace mutation endpoints are intentionally not implemented or enabled
-    by the current frontend foundation.
+    Hybrid workspace control plane. Firebase ID tokens authenticate callers.
+    Workspace records and queue operations require configured PostgreSQL.
+    GitHub Codespaces remains hand-off only; no API provisioning is claimed.
 servers:
   - url: /api
+security:
+  - firebaseBearer: []
 paths:
   /platform:
     get:
-      summary: Read platform capability and integration status
-      operationId: getPlatformStatus
+      security: []
+      summary: Read implementation and provider capability status
       responses:
         '200':
-          description: Safe status; contains no credentials or secret values
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [service, phase, providers]
-                properties:
-                  service: { type: string, const: ocodejs-codespaces }
-                  phase: { type: string, const: frontend-foundation }
-                  providers:
-                    type: object
-                    properties:
-                      githubCodespaces:
-                        type: object
-                        properties:
-                          mode: { type: string, const: handoff }
-                          configured: { type: boolean }
-                          workspaceProvisioning: { type: boolean, const: false }
-                      ocodejsRuntime:
-                        type: object
-                        properties:
-                          mode: { type: string, const: disabled }
-                          configured: { type: boolean, const: false }
-                          workspaceProvisioning: { type: boolean, const: false }
+          description: Safe status with no credential values
+  /session:
+    get:
+      summary: Verify Firebase ID token and return caller identity
+      responses:
+        '200':
+          description: Verified Firebase principal
+        '401':
+          description: Missing or invalid token
+        '503':
+          description: Token verification unavailable
   /v1/workspaces:
     get:
-      summary: List caller-owned workspaces (future)
-      security: [{ sessionAuth: [] }]
+      summary: List workspaces where caller is a member
       responses:
-        '501': { description: Not implemented in the frontend foundation }
+        '200':
+          description: Caller-visible workspace list
+        '401':
+          description: Authentication required
+        '503':
+          description: PostgreSQL unavailable
     post:
-      summary: Request workspace creation (future)
-      security: [{ sessionAuth: [] }]
+      summary: Create a workspace hand-off record
       parameters:
         - in: header
           name: Idempotency-Key
           required: true
-          schema: { type: string, minLength: 16, maxLength: 128 }
+          schema:
+            type: string
+            minLength: 16
+            maxLength: 128
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [repository]
+              properties:
+                repository: { type: string, pattern: '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$' }
+                ref: { type: string, default: main }
+                template: { type: string, enum: [nextjs, react-vite, node, python] }
       responses:
-        '501': { description: Not implemented in the frontend foundation }
+        '202':
+          description: Owner-scoped hand-off record created; GitHub has not provisioned a workspace
+        '409':
+          description: Idempotency key reused with a different request
+        '503':
+          description: PostgreSQL unavailable
+  /v1/workspaces/{id}:
+    get:
+      summary: Read a workspace if caller has membership
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Workspace metadata and caller membership role
+        '404':
+          description: Workspace not found or caller is not a member
+  /v1/jobs/{id}/cancel:
+    post:
+      summary: Request cancellation of a caller-owned job
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '202':
+          description: Cancellation accepted or requested
+        '404':
+          description: Job not found or not cancellable
 components:
   securitySchemes:
-    sessionAuth:
+    firebaseBearer:
       type: http
       scheme: bearer
-      bearerFormat: Opaque session token
+      bearerFormat: Firebase ID token
