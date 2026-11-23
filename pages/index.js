@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import AuthPanel from '../components/AuthPanel'
 
 const projects = [
   { name: 'codespaces-nextjs', owner: 'zskbot', branch: 'main', stack: 'Next.js 16 · React', status: 'Template', color: '#8b5cf6', updated: 'Starter environment' },
@@ -70,6 +71,8 @@ export default function Home() {
               <div className="art-tag">BUILD / PREVIEW / SHIP</div>
             </div>
           </section>
+
+          <AuthPanel />
 
           <section className="stats">
             <div><small>PLATFORM</small><b>OCodeJS Cloud IDE</b></div>
