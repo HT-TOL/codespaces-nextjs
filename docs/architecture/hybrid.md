@@ -2,7 +2,7 @@
 
 ## Status
 
-Design and integration foundation only. This repository does not yet provision workspaces or operate an independent container runtime.
+Control-plane foundation. Firebase identity verification, owner/member-scoped workspace metadata APIs, PostgreSQL schema, durable queue primitives, and a GitHub Codespaces hand-off adapter are implemented. No workspace provisioning or independent container runtime is enabled.
 
 ## Product boundary
 
@@ -15,7 +15,7 @@ OCODEJS Codespaces owns:
 Initial provider:
 - GitHub Codespaces remains the actual compute provider.
 - The first integration is an explicit hand-off to GitHub Codespaces.
-- No GitHub OAuth, GitHub App, PAT, or Codespaces API credentials are assumed to exist.
+- The hand-off adapter creates a GitHub launch URL only. No GitHub OAuth, GitHub App, PAT, or Codespaces API credentials are assumed to exist.
 - The UI must not claim a workspace is running or GitHub is connected unless verified by a real provider response.
 
 Future provider:
@@ -26,9 +26,9 @@ Future provider:
 
 Browser / OCodeJS Web IDE
   -> OCodeJS Workspace Control API
-      -> Authentication and authorization
-      -> Workspace metadata store
-      -> Durable job queue
+      -> Firebase ID token verification + workspace membership authorization
+      -> PostgreSQL workspace metadata + audit store
+      -> Durable PostgreSQL job queue (lease / retry / recovery)
       -> Provider adapter
           -> GitHub Codespaces adapter (initial hand-off)
           -> OCodeJS isolated runtime adapter (future, disabled)
