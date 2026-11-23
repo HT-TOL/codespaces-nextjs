@@ -44,6 +44,10 @@ All workspace APIs fail closed when Firebase verification or PostgreSQL is unava
 
 The CI workflow runs tests and a Next.js build on pull requests targeting main. It is not triggered by feature-branch pushes. No production deployment, DNS change, paid compute, or credential provisioning is part of this work.
 
+## Merge safety
+
+See [merge safety investigation](docs/merge-safety.md). PR #3 remains unopened until the main-branch ruleset is applied and verified.
+
 ## Security boundaries
 
 The independent OCodeJS container runtime remains disabled. Do not execute user code until non-root isolation, resource quotas, default-deny networking, secret redaction, cross-tenant isolation, cancellation, recovery, and container escape tests pass.
