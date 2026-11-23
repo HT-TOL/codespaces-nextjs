@@ -32,3 +32,5 @@ Before creating another PR, configure a main-branch ruleset that:
 6. Does not grant bypass to the repository owner or automation identities for the protected rules.
 
 The connected integration exposes read access to rulesets but no ruleset/branch-protection write action. A repository administrator must apply and verify the ruleset in GitHub Settings before PR creation resumes.
+
+Repository settings: https://github.com/zskbot/codespaces-ocodejs/settings/branches
