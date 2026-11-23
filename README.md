@@ -33,7 +33,7 @@ The migration is additive and uses CREATE TABLE IF NOT EXISTS. No database is pr
 - POST /api/v1/workspaces — creates an owner-scoped hand-off record. Requires an Idempotency-Key header and JSON { repository, ref, template }.
 - GET /api/v1/workspaces/:id — returns a workspace only to its members.
 - GET /api/v1/workspaces/:id/members — lists member UIDs and roles for workspace members.
-- POST /api/v1/workspaces/:id/members — owner-only role assignment for an existing Firebase UID (editor or viewer); recipients must sign in with that UID.
+- POST /api/v1/workspaces/:id/members — owner-only role assignment to a Firebase UID (editor or viewer); the API does not resolve or verify the target account, and access is granted only when a signed-in UID matches.
 
 All workspace APIs fail closed when Firebase verification or PostgreSQL is unavailable. A successful hand-off response is not proof that GitHub created a Codespace.
 
@@ -42,7 +42,7 @@ All workspace APIs fail closed when Firebase verification or PostgreSQL is unava
     npm test
     npm run build
 
-CI is configured to run tests and a Next.js build on the feature branch. No production deployment, DNS change, paid compute, or credential provisioning is part of this work.
+The CI workflow runs tests and a Next.js build on pull requests targeting main. It is not triggered by feature-branch pushes. No production deployment, DNS change, paid compute, or credential provisioning is part of this work.
 
 ## Security boundaries
 
