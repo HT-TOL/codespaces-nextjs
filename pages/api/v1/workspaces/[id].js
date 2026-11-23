@@ -1,6 +1,6 @@
 import { FirebaseAuthError, getBearerToken, verifyFirebaseIdToken } from '../../../../lib/auth/firebase'
 import { getDatabase } from '../../../../lib/db/postgres'
-import { assertWorkspaceOwner } from '../../../../lib/auth/workspace-access'
+import { assertWorkspaceRole } from '../../../../lib/auth/workspace-access'
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store')
@@ -30,11 +30,11 @@ export default async function handler(req, res) {
 
   try {
     const result = await db.query(
-      'SELECT id, owner_id, repository, git_ref, template, provider, lifecycle_state, created_at, updated_at FROM workspaces WHERE id = $1 AND owner_id = $2 AND lifecycle_state <> $3',
+      'SELECT w.id, w.owner_id, w.repository, w.git_ref, w.template, w.provider, w.lifecycle_state, w.created_at, w.updated_at, m.role AS member_role FROM workspaces w JOIN workspace_members m ON m.workspace_id = w.id WHERE w.id = $1 AND m.user_id = $2 AND w.lifecycle_state <> $3',
       [req.query.id, principal.uid, 'deleted'],
     )
     const workspace = result.rows[0]
-    assertWorkspaceOwner(workspace, principal)
+    assertWorkspaceRole(workspace, principal, 'viewer')
     delete workspace.owner_id
     return res.status(200).json({ workspace })
   } catch (error) {
