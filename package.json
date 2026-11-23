@@ -3,11 +3,17 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node --test",
+    "migrate": "node scripts/migrate.cjs"
   },
   "dependencies": {
+    "firebase": "^12.17.0",
+    "jose": "^6.2.6",
     "next": "^16.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  }
+    "react-dom": "^18.2.0",
+    "pg": "^8.16.3"
+  },
+  "type": "module"
 }
