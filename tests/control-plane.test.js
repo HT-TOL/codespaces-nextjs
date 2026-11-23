@@ -41,3 +41,15 @@ test('GitHub Codespaces provider creates a hand-off, never a provisioned runtime
 test('GitHub Codespaces provider rejects malformed repository names', () => {
   assert.throws(() => createGithubCodespacesHandoff('https://evil.example'), { code: 'INVALID_REPOSITORY' })
 })
+
+import { assertWorkspaceRole } from '../lib/auth/workspace-access.js'
+
+test('workspace membership roles enforce least privilege', () => {
+  const viewer = { member_role: 'viewer' }
+  const editor = { member_role: 'editor' }
+  const owner = { member_role: 'owner' }
+  assert.doesNotThrow(() => assertWorkspaceRole(viewer, { uid: 'u1' }, 'viewer'))
+  assert.throws(() => assertWorkspaceRole(viewer, { uid: 'u1' }, 'editor'), { code: 'WORKSPACE_NOT_FOUND' })
+  assert.doesNotThrow(() => assertWorkspaceRole(editor, { uid: 'u1' }, 'editor'))
+  assert.doesNotThrow(() => assertWorkspaceRole(owner, { uid: 'u1' }, 'owner'))
+})
