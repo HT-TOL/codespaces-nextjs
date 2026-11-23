@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS workspace_jobs (
   UNIQUE (owner_id, idempotency_key)
 );
 
+ALTER TABLE workspace_jobs ADD COLUMN IF NOT EXISTS cancel_requested_at TIMESTAMPTZ;
+
 CREATE INDEX IF NOT EXISTS workspace_jobs_claim_idx
   ON workspace_jobs (state, available_at, created_at);
 
