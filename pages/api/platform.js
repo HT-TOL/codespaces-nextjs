@@ -8,7 +8,7 @@ export default function handler(req, res) {
   // Never return credential values or infer authentication from variable presence.
   return res.status(200).json({
     service: 'ocodejs-codespaces',
-    phase: 'frontend-foundation',
+    phase: 'control-plane-foundation',
     providers: {
       githubCodespaces: {
         mode: 'handoff',
@@ -24,6 +24,9 @@ export default function handler(req, res) {
     },
     capabilities: {
       dashboard: true,
+      sessionVerification: true,
+      workspaceMetadataApi: true,
+      durableQueuePrimitives: true,
       workspaceProvisioning: false,
       terminal: false,
       filesystem: false,
