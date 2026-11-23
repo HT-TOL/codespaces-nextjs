@@ -6,9 +6,9 @@ OCodeJS-branded cloud development workspace with a Hybrid provider strategy.
 
 - Firebase Google sign-in client using the existing public OCodeJS Firebase project configuration.
 - Server-side Firebase ID token verification with Google JWKS (jose).
-- Owner-scoped workspace list/detail/create API. Owner identity comes only from the verified Firebase token.
+- Workspace list/detail/create API scoped by Firebase-authenticated membership; roles are owner, editor, and viewer. Owner identity comes only from the verified Firebase token.
 - PostgreSQL schema for workspaces, durable jobs, and audit events.
-- Durable queue primitives: atomic SKIP LOCKED claim, worker leases, lease extension, bounded retry/backoff, dead-letter state, cancellation request, and expired-lease recovery.
+- Durable queue primitives: idempotent enqueue, atomic SKIP LOCKED claim, worker leases, lease extension, bounded retry/backoff, dead-letter state, cancellation request, and expired-lease recovery.
 - GitHub Codespaces hand-off adapter. It creates a launch URL only; it does not provision a Codespace.
 
 ## Run locally
