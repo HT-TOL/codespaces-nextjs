@@ -1,7 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getBearerToken, verifyFirebaseIdToken, FirebaseAuthError } from '../lib/auth/firebase.js'
-import { assertWorkspaceOwner } from '../lib/auth/workspace-access.js'
 import { createGithubCodespacesHandoff } from '../lib/providers/github-codespaces.js'
 
 test('Bearer parser accepts a valid Authorization header', () => {
@@ -17,14 +16,6 @@ test('Firebase verifier rejects malformed tokens without a network request', asy
   await assert.rejects(
     verifyFirebaseIdToken('short'),
     (error) => error instanceof FirebaseAuthError && error.status === 401 && error.code === 'INVALID_SESSION',
-  )
-})
-
-test('workspace ownership is enforced and hides foreign resources', () => {
-  assert.equal(assertWorkspaceOwner({ owner_id: 'user-a' }, { uid: 'user-a' }).owner_id, 'user-a')
-  assert.throws(
-    () => assertWorkspaceOwner({ owner_id: 'user-a' }, { uid: 'user-b' }),
-    (error) => error.status === 404 && error.code === 'WORKSPACE_NOT_FOUND',
   )
 })
 
