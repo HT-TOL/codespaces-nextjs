@@ -7,11 +7,11 @@
 - Both PRs report `auto_merge = null`.
 - Repository metadata reports `allow_auto_merge = false`.
 - The repository rulesets endpoint returned an empty list.
-- The branch-protection endpoint returned HTTP 403 to the connected GitHub integration. Therefore the effective protection state of `main` could not be verified.
+- GitHub branch metadata explicitly reports `main.protected = false`.
 
 ## What this proves — and what it does not
 
-The GitHub API attributes both merge operations to the repository owner's account, `zskbot`. The available records do not identify whether the action came from a person in the GitHub UI, a personal access token, or an integration acting as that account. Auto-merge is not the explanation shown by the API. The precise initiating mechanism remains unverified.
+The GitHub API attributes both merge operations to the repository owner's account, `zskbot`. The confirmed safety gap is that `main` has no branch protection and no repository rulesets, so GitHub enforces no pull-request approval gate on merges. The available records do not identify whether a person in the GitHub UI, a personal access token, or an integration acting as that account initiated them. Auto-merge is not the explanation shown by the API. The exact initiating client remains unverified.
 
 ## Current safeguard
 
@@ -31,4 +31,4 @@ Before creating another PR, configure a main-branch ruleset that:
 5. Blocks force pushes and branch deletion.
 6. Does not grant bypass to the repository owner or automation identities for the protected rules.
 
-The connected integration cannot currently write or verify branch-protection settings. A repository administrator must apply and verify the ruleset in GitHub Settings before PR creation resumes.
+The connected integration exposes read access to rulesets but no ruleset/branch-protection write action. A repository administrator must apply and verify the ruleset in GitHub Settings before PR creation resumes.
