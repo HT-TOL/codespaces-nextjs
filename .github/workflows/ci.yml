@@ -1,9 +1,6 @@
 name: OCODEJS Codespaces CI
 
 on:
-  push:
-    branches:
-      - feat/ocodejs-codespaces-firebase-session
   pull_request:
     branches:
       - main
