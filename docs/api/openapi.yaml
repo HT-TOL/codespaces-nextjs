@@ -79,6 +79,37 @@ paths:
           description: Workspace metadata and caller membership role
         '404':
           description: Workspace not found or caller is not a member
+  /v1/workspaces/{id}/members:
+    get:
+      summary: List workspace members when caller is a member
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: Workspace member roles }
+        '404': { description: Workspace not found or caller is not a member }
+    post:
+      summary: Owner assigns editor or viewer role to a Firebase UID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [userId, role]
+              properties:
+                userId: { type: string, minLength: 1, maxLength: 128 }
+                role: { type: string, enum: [editor, viewer] }
+      responses:
+        '200': { description: Member role assigned }
+        '404': { description: Workspace not found or caller is not owner }
   /v1/jobs/{id}/cancel:
     post:
       summary: Request cancellation of a caller-owned job
