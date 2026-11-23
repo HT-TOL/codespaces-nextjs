@@ -56,8 +56,11 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'INVALID_MEMBER_ROLE' })
   }
 
-  const client = await db.connect()
+  if (userId === principal.uid) return res.status(400).json({ error: 'OWNER_ROLE_CANNOT_BE_CHANGED_HERE' })
+
+  let client
   try {
+    client = await db.connect()
     await client.query('BEGIN')
     const access = await client.query(
       'SELECT w.id, m.role AS member_role FROM workspaces w JOIN workspace_members m ON m.workspace_id = w.id WHERE w.id = $1 AND m.user_id = $2 AND w.lifecycle_state <> $3 FOR UPDATE OF w',
@@ -81,6 +84,6 @@ export default async function handler(req, res) {
     if (error.status === 404) return res.status(404).json({ error: error.code })
     return res.status(503).json({ error: 'WORKSPACE_STORAGE_UNAVAILABLE' })
   } finally {
-    client.release()
+    client?.release()
   }
 }
