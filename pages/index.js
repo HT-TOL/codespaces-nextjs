@@ -40,16 +40,16 @@ export default function Home() {
           <div className="sidebar-bottom">
             <div className="runtime-card">
               <span className="runtime-dot" />
-              <div><b>Runtime provider</b><small>GitHub Codespaces</small></div>
+              <div><b>Runtime provider</b><small>External workspace provider</small></div>
             </div>
-            <div className="profile"><div className="avatar">Z</div><div><b>OCodeJS Developer</b><small>GitHub connected</small></div><span className="more">···</span></div>
+            <div className="profile"><div className="avatar">Z</div><div><b>OCodeJS Developer</b><small>Sign in to connect account</small></div><span className="more">···</span></div>
           </div>
         </aside>
 
         <main className="main" id="overview">
           <header className="topbar">
             <div className="breadcrumb">OCODEJS <span>/</span> WORKSPACE</div>
-            <div className="top-actions"><span className="connection"><i /> GitHub integration</span><a className="icon-button" href="https://github.com/zskbot/codespaces-nextjs" target="_blank" rel="noreferrer" aria-label="Source repository">↗</a><div className="avatar small">Z</div></div>
+            <div className="top-actions"><span className="connection"><i /> Provider hand-off only</span><a className="icon-button" href="https://github.com/zskbot/codespaces-nextjs" target="_blank" rel="noreferrer" aria-label="Source repository">↗</a><div className="avatar small">Z</div></div>
           </header>
 
           <section className="welcome">
@@ -76,7 +76,7 @@ export default function Home() {
 
           <section className="stats">
             <div><small>PLATFORM</small><b>OCodeJS Cloud IDE</b></div>
-            <div><small>WORKSPACE RUNTIME</small><b>GitHub Codespaces</b></div>
+            <div><small>WORKSPACE RUNTIME</small><b>GitHub hand-off</b></div>
             <div><small>ENVIRONMENT</small><b><span className="status-dot" /> Preview foundation</b></div>
           </section>
 
