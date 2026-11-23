@@ -15,6 +15,21 @@ CREATE TABLE IF NOT EXISTS workspaces (
 CREATE INDEX IF NOT EXISTS workspaces_owner_created_idx
   ON workspaces (owner_id, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS workspace_members (
+  workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
+  user_id TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('owner','editor','viewer')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (workspace_id, user_id)
+);
+
+CREATE INDEX IF NOT EXISTS workspace_members_user_idx
+  ON workspace_members (user_id, workspace_id);
+
+INSERT INTO workspace_members (workspace_id, user_id, role)
+SELECT id, owner_id, 'owner' FROM workspaces
+ON CONFLICT (workspace_id, user_id) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS workspace_jobs (
   id UUID PRIMARY KEY,
   workspace_id UUID NOT NULL REFERENCES workspaces(id) ON DELETE CASCADE,
