@@ -12,13 +12,13 @@ async function main() {
   })
   try {
     const sql = await fs.readFile(path.join(__dirname, '..', 'migrations/001_workspace_control_plane.sql'), 'utf8')
-    await pool.query(sql)
-    process.stdout.write('Workspace control-plane migration applied.\\n')
+    await pool.query(`BEGIN;\\n${sql}\\nCOMMIT;`)
+    process.stdout.write('Workspace control-plane migration applied.\n')
   } finally {
     await pool.end()
   }
 }
 main().catch((error) => {
-  process.stderr.write(`Migration failed: ${error.message}\\n`)
+  process.stderr.write(`Migration failed: ${error.message}\n`)
   process.exitCode = 1
 })
