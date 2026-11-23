@@ -2,6 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { getBearerToken, verifyFirebaseIdToken, FirebaseAuthError } from '../lib/auth/firebase.js'
 import { createGithubCodespacesHandoff } from '../lib/providers/github-codespaces.js'
+import { assertWorkspaceRole, isUuid } from '../lib/auth/workspace-access.js'
 
 test('Bearer parser accepts a valid Authorization header', () => {
   assert.equal(getBearerToken({ headers: { authorization: 'Bearer abc.def.ghi' } }), 'abc.def.ghi')
@@ -33,7 +34,6 @@ test('GitHub Codespaces provider rejects malformed repository names', () => {
   assert.throws(() => createGithubCodespacesHandoff('https://evil.example'), { code: 'INVALID_REPOSITORY' })
 })
 
-import { assertWorkspaceRole, isUuid } from '../lib/auth/workspace-access.js'
 
 test('workspace membership roles enforce least privilege', () => {
   const viewer = { member_role: 'viewer' }
