@@ -12,3 +12,18 @@ body {
   text-rendering: optimizeLegibility;
   hyphens: auto;
 }
+
+.auth-panel {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 18px; flex-wrap: wrap; margin: 22px 0 0; padding: 15px 16px;
+  border: 1px solid #2a3448; background: #090e19;
+}
+.auth-panel-copy { display: flex; flex-direction: column; gap: 3px; min-width: 180px; }
+.auth-kicker { color: #8b9dc4; font: 10px ui-monospace, monospace; letter-spacing: 1.4px; }
+.auth-panel-copy b { color: #f3f5fb; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.auth-panel-copy small { color: #8d98ad; font-size: 10px; }
+.auth-button { min-height: 38px; padding: 0 13px; border: 1px solid #f3f5fb; border-radius: 0; background: #f3f5fb; color: #080b13; font: 600 11px ui-monospace, monospace; cursor: pointer; }
+.auth-button.secondary { border-color: #39445a; background: transparent; color: #dce3f1; }
+.auth-button:disabled { opacity: .55; cursor: wait; }
+.auth-error { flex-basis: 100%; margin: 0; color: #ff9c9c; font-size: 11px; }
+@media (max-width: 680px) { .auth-panel { align-items: stretch; flex-direction: column; } .auth-button { width: 100%; } }
