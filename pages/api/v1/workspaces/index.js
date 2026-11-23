@@ -72,8 +72,9 @@ export default async function handler(req, res) {
 
   const handoff = createGithubCodespacesHandoff(repository, gitRef)
   const workspaceId = randomUUID()
-  const client = await db.connect()
+  let client
   try {
+    client = await db.connect()
     await client.query('BEGIN')
     const inserted = await client.query(
       `INSERT INTO workspaces
@@ -118,8 +119,9 @@ export default async function handler(req, res) {
     })
   } catch (error) {
     try { await client.query('ROLLBACK') } catch {}
-    return res.status(503).json({ error: error.message === 'IDEMPOTENCY_CONFLICT' ? error.message : 'WORKSPACE_STORAGE_UNAVAILABLE' })
+    if (error.message === 'IDEMPOTENCY_CONFLICT') return res.status(409).json({ error: error.message })
+    return res.status(503).json({ error: 'WORKSPACE_STORAGE_UNAVAILABLE' })
   } finally {
-    client.release()
+    client?.release()
   }
 }
